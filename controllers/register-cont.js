@@ -1,19 +1,5 @@
-const usersDB = {
-  users: require("../models/users.json"),
-  setUser: function (data) {
-    this.users = data;
-  },
-};
-
-const accountsDB = {
-  accounts: require("../models/accounts.json"),
-  setAccount: function (data) {
-    this.accounts = data;
-  },
-};
-
-const fsPromises = require("fs").promises;
-const path = require("path");
+const Account = require("../models/Account");
+const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const { generateAccountNumber } = require("../utils/gen-account");
 
@@ -38,68 +24,54 @@ const createNewUser = async (req, res) => {
     !phone ||
     !address ||
     !account_type
-  )
-    return res.status(400).json({ message: "All fields required" });
+  ) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
 
-  const duplicate = usersDB.users.find((admin) => admin.username === username);
+  // Check for duplicate username
+  const duplicate = await User.findOne({ username }).exec();
   if (duplicate) {
-    res.status(409).json({ message: "User already exists!" });
-  } else {
-    try {
-      const hashedPwd = await bcrypt.hash(password, 10);
-      const newUser = {
-        id:
-          usersDB.users.length > 0
-            ? usersDB.users[usersDB.users.length - 1].id + 1
-            : 1,
-        username: username,
-        password: hashedPwd,
-        email: email,
-        firstname: firstname,
-        lastname: lastname,
-        address: address,
-        phone: phone,
-        account_type: account_type,
-        account_no: generateAccountNumber(),
-      };
+    return res.status(409).json({ message: "User already exists!" });
+  }
 
-      // Add new user to usersDB
-      usersDB.setUser([...usersDB.users, newUser]);
+  try {
+    // Hash the password
+    const hashedPwd = await bcrypt.hash(password, 10);
 
-      // Create a new account for the user and add to accountsDB
-      const newAccount = {
-        id:
-          accountsDB.accounts.length > 0
-            ? accountsDB.accounts[accountsDB.accounts.length - 1].id + 1
-            : 1,
-        account_owner: username,
-        account_num: newUser.account_no,
-        account_type: account_type,
-        available_bal: parseFloat(0).toFixed(2), // Set initial available balance to 0 as a number
-        current_bal: parseFloat(0).toFixed(2), // Set initial current balance to 0 as a number
-      };
-      accountsDB.setAccount([...accountsDB.accounts, newAccount]);
+    // Create a new user object
+    const newUser = {
+      username: username,
+      password: hashedPwd,
+      email: email,
+      firstname: firstname,
+      lastname: lastname,
+      address: address,
+      phone: phone,
+      account_type: account_type,
+      account_no: generateAccountNumber(),
+      refresh_token: null, // Handle refresh tokens separately
+    };
 
-      // Save the updated users and accounts to their respective JSON files
-      await fsPromises.writeFile(
-        path.join(__dirname, "..", "models", "users.json"),
-        JSON.stringify(usersDB.users)
-      );
-      await fsPromises.writeFile(
-        path.join(__dirname, "..", "models", "accounts.json"),
-        JSON.stringify(accountsDB.accounts)
-      );
+    // Create a new account for the user
+    const newAccount = {
+      account_owner: newUser.username,
+      account_num: newUser.account_no,
+      account_type: newUser.account_type,
+      available_bal: 0, // Use integers or fixed-point decimals for monetary values
+      current_bal: 0, // Use integers or fixed-point decimals for monetary values
+    };
 
-      console.log(usersDB.users);
-      console.log(accountsDB.accounts);
+    // Save the user and account
+    const userSave = await User.create(newUser);
+    const acctSave = await Account.create(newAccount);
 
-      res.status(201).json({ message: `New User ${username} created!` });
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
+    console.log(userSave);
+    console.log(acctSave);
+
+    res.status(201).json({ message: `New User ${username} created!` });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
-module.exports = createNewUser;
-
-module.exports = createNewUser;
+module.exports = { createNewUser };

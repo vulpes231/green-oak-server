@@ -1,22 +1,25 @@
 const mongoose = require("mongoose");
-
 const Schema = mongoose.Schema;
 
 const accountSchema = new Schema({
   account_owner: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId, // Reference to User model or use a String if you want to store usernames
+    required: true,
   },
   account_num: {
-    type: Number,
+    type: String,
+    required: true,
+    unique: true, // Ensure account numbers are unique
   },
   account_type: {
     type: String,
+    required: true,
   },
   available_bal: {
-    type: Number,
+    type: Number, // Consider using integers or fixed-point decimals for monetary values
   },
   current_bal: {
-    type: Number,
+    type: Number, // Consider using integers or fixed-point decimals for monetary values
   },
 });
 
