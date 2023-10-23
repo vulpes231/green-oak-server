@@ -1,21 +1,15 @@
-const userDB = {
-  users: require("../models/users.json"),
-  setEmployee: function (data) {
-    this.users = data;
-  },
-};
-
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 require("dotenv").config();
 
-const handleUserToken = (req, res) => {
+const handleUserToken = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.status(401);
   console.log(cookies.jwt);
 
   const refreshToken = cookies.jwt;
 
-  const user = userDB.users.find((emp) => emp.refreshToken === refreshToken);
+  const user = await User.findOne({ refreshToken }).exec();
 
   if (!user) return res.status(403).json({ message: "Forbidden!" });
 

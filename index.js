@@ -6,6 +6,9 @@ const cors = require("cors");
 const { corsOptions } = require("./configs/cors-options");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
+const mongoose = require("mongoose");
+
+const { connectDB } = require("./configs/connect-db");
 
 const {
   logger,
@@ -16,6 +19,8 @@ const {
 
 app.use(logger);
 
+connectDB();
+
 app.use(credentials);
 app.use(cors(corsOptions));
 
@@ -25,7 +30,6 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, "/public")));
 
-app.use("/enroll", require("./routers/enroll"));
 app.use("/register", require("./routers/register"));
 app.use("/auth", require("./routers/auth"));
 app.use("/refresh", require("./routers/refresh"));
@@ -33,10 +37,14 @@ app.use("/logout", require("./routers/logout"));
 app.use("/", require("./routers/root"));
 
 app.use(verifyJwt);
-app.use("/users", require("./routers/users"));
+app.use("/user", require("./routers/user"));
 app.use("/account", require("./routers/account"));
-app.use("/transactions", require("./routers/transactions"));
+// app.use("/transactions", require("./routers/transactions"));
 app.use("/change-password", require("./routers/change-password"));
 
 app.use(errorLogger);
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+mongoose.connection.once("open", () => {
+  console.log(`Connected to database...`);
+  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+});

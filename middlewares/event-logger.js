@@ -7,22 +7,30 @@ const allowedOrigins = require("../configs/allowed-origins");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-async function eventLogger(message, logName) {
-  const newDate = format(new Date(), "yyyy/MM/dd\tHH:mm:ss");
-  const logItem = `${newDate}\t${uuid()}\t${message}`;
-  console.log(logItem);
+function eventLogger(message, logName) {
+  // Create a formatted date item
+  const dateItem = format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-  try {
-    if (!fs.existsSync(path.join(__dirname, "..", "logs"))) {
-      await fsPromises.mkdir(path.join(__dirname, "..", "logs"));
-      await fsPromises.appendFile(
-        path.join(__dirname, "..", "logs", logName),
-        logItem
-      );
-    }
-  } catch (err) {
-    console.log(err);
+  // Create the log item
+  const logItem = `${dateItem}\t${uuid()}\t${message}\n`;
+
+  // Check if the log folder exists in the root directory, and create it if not
+  const logFolder = "logs";
+  if (!fs.existsSync(logFolder)) {
+    fs.mkdirSync(logFolder);
   }
+
+  // Define the log file path
+  const logFilePath = `./${logFolder}/${logName}.txt`;
+
+  // Append the log item to the log file
+  fs.appendFile(logFilePath, logItem, (err) => {
+    if (err) {
+      console.error("Error writing to log file:", err);
+    } else {
+      console.log("Log entry added to", logFilePath);
+    }
+  });
 }
 
 function logger(req, res, next) {

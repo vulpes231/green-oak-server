@@ -28,18 +28,15 @@ const createNewUser = async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  // Check for duplicate username
-  const duplicate = await User.findOne({ username }).exec();
-  if (duplicate) {
-    return res.status(409).json({ message: "User already exists!" });
-  }
+  let newUser;
+  let newAccount;
 
   try {
     // Hash the password
     const hashedPwd = await bcrypt.hash(password, 10);
 
     // Create a new user object
-    const newUser = {
+    newUser = new User({
       username: username,
       password: hashedPwd,
       email: email,
@@ -50,26 +47,42 @@ const createNewUser = async (req, res) => {
       account_type: account_type,
       account_no: generateAccountNumber(),
       refresh_token: null, // Handle refresh tokens separately
-    };
+    });
 
     // Create a new account for the user
-    const newAccount = {
-      account_owner: newUser.username,
+    newAccount = new Account({
+      account_owner: newUser._id, // Use the _id of the user document
       account_num: newUser.account_no,
       account_type: newUser.account_type,
       available_bal: 0, // Use integers or fixed-point decimals for monetary values
       current_bal: 0, // Use integers or fixed-point decimals for monetary values
-    };
+    });
 
-    // Save the user and account
-    const userSave = await User.create(newUser);
-    const acctSave = await Account.create(newAccount);
+    // Start a session for the transaction
+    const session = await User.startSession();
+    session.startTransaction();
 
-    console.log(userSave);
-    console.log(acctSave);
+    // Save the user
+    await newUser.save({ session });
+
+    // Save the account
+    await newAccount.save({ session });
+
+    // Commit the transaction
+    await session.commitTransaction();
+    session.endSession();
 
     res.status(201).json({ message: `New User ${username} created!` });
   } catch (err) {
+    if (newUser) {
+      // If user creation was attempted, delete the user to roll back the transaction
+      await newUser.deleteOne();
+    }
+    if (newAccount) {
+      // If account creation was attempted, delete the account to roll back the transaction
+      await newAccount.deleteOne();
+    }
+
     res.status(500).json({ message: err.message });
   }
 };
