@@ -39,7 +39,8 @@ app.use("/", require("./routers/root"));
 app.use(verifyJwt);
 app.use("/user", require("./routers/user"));
 app.use("/account", require("./routers/account"));
-// app.use("/transactions", require("./routers/transactions"));
+app.use("/deposit", require("./routers/deposit"));
+app.use("/transaction", require("./routers/transaction"));
 app.use("/change-password", require("./routers/change-password"));
 
 app.use(errorLogger);

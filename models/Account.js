@@ -16,10 +16,10 @@ const accountSchema = new Schema({
     required: true,
   },
   available_bal: {
-    type: Number, // Consider using integers or fixed-point decimals for monetary values
+    type: Number,
   },
   current_bal: {
-    type: Number, // Consider using integers or fixed-point decimals for monetary values
+    type: Number,
   },
 });
 

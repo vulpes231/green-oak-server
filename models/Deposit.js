@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const transactionSchema = new Schema({
-  sender: {
-    type: String,
+const depositSchema = new Schema({
+  depositor: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  receiver: {
+  deposit_account: {
     type: String,
     required: true,
   },
@@ -15,14 +15,14 @@ const transactionSchema = new Schema({
     type: String,
     required: true,
   },
-  desc: {
+  deposit_date: {
     type: String,
     required: true,
   },
-  date: {
+  available_date: {
     type: String,
     required: true,
   },
 });
 
-module.exports = mongoose.model("Transaction", transactionSchema);
+module.exports = mongoose.model("Deposit", depositSchema);

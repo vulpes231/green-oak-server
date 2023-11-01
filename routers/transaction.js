@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.route("/").get(getAllTransactions).post(createNewTransaction);
 
-router.route("/:username").get(getUserTransactions);
+router.route("/:id").get(getUserTransactions);
 
 module.exports = router;
