@@ -49,13 +49,14 @@ const createNewUser = async (req, res) => {
       refresh_token: null, // Handle refresh tokens separately
     });
 
+    // const avail = parseFloat(0).toFixed(2);
+
     // Create a new account for the user
     newAccount = new Account({
       account_owner: newUser._id, // Use the _id of the user document
       account_num: newUser.account_no,
       account_type: newUser.account_type,
-      available_bal: 0, // Use integers or fixed-point decimals for monetary values
-      current_bal: 0, // Use integers or fixed-point decimals for monetary values
+      available_bal: 0,
     });
 
     // Start a session for the transaction

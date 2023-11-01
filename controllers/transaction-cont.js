@@ -28,26 +28,34 @@ const createNewTransaction = async (req, res) => {
   if (!receiver)
     return res.status(404).json({ message: "Invalid receiver account!" });
 
+  const amt = parseFloat(amount);
+
   try {
     const newTransaction = {
       sender: sender,
       receiver: account,
-      amount: amount,
+      amount: amt,
       desc: description,
       date: date,
     };
 
-    receiver.available_bal += amount;
+    let floatBal;
+
+    floatBal = parseFloat(receiver.available_bal);
+    console.log(floatBal);
+    console.log(amt);
+
+    receiver.available_bal = floatBal + amt;
     await receiver.save();
 
     const transaction = await Transaction.create(newTransaction);
-    console.log(transaction);
+    console.log(receiver.available_bal);
     res.status(201).json({ message: "Transaction created successfully!" });
   } catch (error) {
     console.log(error);
     res
       .status(500)
-      .json({ message: "An error occured while creating transaction!" });
+      .json({ message: "An error occurred while creating a transaction!" });
   }
 };
 
