@@ -1,0 +1,44 @@
+2023-10-30 01:20:27	91fb900a-438a-4db7-9c4d-8037f7acba8d	Error	Error: You are not allowed on this server
+    at origin (/Users/Scoring/Desktop/greenoak/server/configs/cors-options.js:8:16)
+    at /Users/Scoring/Desktop/greenoak/server/node_modules/cors/lib/index.js:219:13
+    at optionsCallback (/Users/Scoring/Desktop/greenoak/server/node_modules/cors/lib/index.js:199:9)
+    at corsMiddleware (/Users/Scoring/Desktop/greenoak/server/node_modules/cors/lib/index.js:204:7)
+    at Layer.handle [as handle_request] (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:328:13)
+    at /Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:280:10)
+    at credentials (/Users/Scoring/Desktop/greenoak/server/middlewares/event-logger.js:54:3)
+2023-10-30 11:35:40	0aa7a708-984e-4b72-afc2-2fb14540e2dd	TypeError	TypeError: Cannot read properties of undefined (reading 'split')
+    at verifyJwt (/Users/Scoring/Desktop/greenoak/server/middlewares/event-logger.js:62:28)
+    at Layer.handle [as handle_request] (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:328:13)
+    at /Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:280:10)
+    at /Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:646:15
+    at next (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:265:14)
+    at Function.handle (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:175:3)
+    at router (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:47:12)
+2023-10-30 16:32:04	e91dd798-b14b-436d-ac1c-62b9105b041e	TypeError	TypeError: Cannot read properties of undefined (reading 'split')
+    at verifyJwt (/Users/Scoring/Desktop/greenoak/server/middlewares/event-logger.js:62:28)
+    at Layer.handle [as handle_request] (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:328:13)
+    at /Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:280:10)
+    at /Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:646:15
+    at next (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:265:14)
+    at Function.handle (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:175:3)
+    at router (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:47:12)
+2023-10-31 19:00:15	a629a5fd-b0d7-4983-b729-14e0b1237587	TypeError	TypeError: Cannot read properties of undefined (reading 'split')
+    at verifyJwt (/Users/Scoring/Desktop/greenoak/server/middlewares/event-logger.js:62:28)
+    at Layer.handle [as handle_request] (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:328:13)
+    at /Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:280:10)
+    at /Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:646:15
+    at next (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:265:14)
+    at Function.handle (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:175:3)
+    at router (/Users/Scoring/Desktop/greenoak/server/node_modules/express/lib/router/index.js:47:12)

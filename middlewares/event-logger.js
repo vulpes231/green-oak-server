@@ -34,13 +34,13 @@ function eventLogger(message, logName) {
 }
 
 function logger(req, res, next) {
-  eventLogger(`${req.method}\t${req.headers.origin}\t${req.url}`, "reqlog.txt");
+  eventLogger(`${req.method}\t${req.headers.origin}\t${req.url}`, "reqlog");
   console.log(`${req.method}\t${req.path}`);
   next();
 }
 
 function errorLogger(err, req, res, next) {
-  logEvent(`${err.name}\t${err.stack}`, "errorLog.txt");
+  eventLogger(`${err.name}\t${err.stack}`, "errorLog");
   console.error(err.stack);
   res.status(500).send(err.message);
 }
@@ -69,4 +69,5 @@ const verifyJwt = (req, res, next) => {
     }
   });
 };
+
 module.exports = { eventLogger, logger, errorLogger, verifyJwt, credentials };

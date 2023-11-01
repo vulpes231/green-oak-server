@@ -8,6 +8,8 @@ const getAllUsers = async (req, res) => {
 const getUser = async (req, res) => {
   const { id } = req.params;
 
+  console.log(id);
+
   const user = await User.findOne({ _id: id }).exec();
   if (!user) return res.status(404).json({ message: "user not found" });
   res.status(200).json(user);

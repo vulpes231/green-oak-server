@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.route("/").get(getAllAccounts).post(createNewAccount);
 
-router.route("/:username").get(getUserAccount);
+router.route("/:userId").get(getUserAccount);
 
 module.exports = router;

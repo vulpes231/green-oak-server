@@ -7,6 +7,6 @@ const {
 const router = express.Router();
 
 router.route("/").get(getAllUsers).put(updateUser);
-router.route("/:username").get(getUser);
+router.route("/:id").get(getUser);
 
 module.exports = router;

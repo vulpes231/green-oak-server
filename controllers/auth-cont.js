@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
+  console.log(username, password);
 
   if (!username || !password) {
     return res
@@ -54,7 +55,9 @@ const loginUser = async (req, res) => {
     maxAge: 24 * 60 * 60 * 1000,
   });
 
-  res.status(200).json({ accessToken });
+  const userId = user._id.toString();
+
+  res.status(200).json({ accessToken, userId, username });
 };
 
 module.exports = loginUser;

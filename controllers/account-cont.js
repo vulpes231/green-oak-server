@@ -56,11 +56,12 @@ const createNewAccount = async (req, res) => {
 };
 
 const getUserAccount = async (req, res) => {
-  const { username } = req.params;
+  const { userId } = req.params;
+  console.log(userId);
 
   // Assuming you have a Mongoose model named 'Account'
   try {
-    const userAccounts = await Account.find({ username }); // Find all accounts with the given username
+    const userAccounts = await Account.find({ account_owner: userId }); // Find all accounts with the given username
     if (!userAccounts || userAccounts.length === 0) {
       return res
         .status(400)

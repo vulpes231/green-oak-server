@@ -1,5 +1,0 @@
-2023-10-23 10:35:26	0f37c96a-2127-4757-b531-dc2f56ca602d	GET	undefined	/
-2023-10-23 10:39:12	21e751ee-3689-4202-9acf-b363cc979978	POST	undefined	/register
-2023-10-23 10:46:10	c6c757d4-cfdb-44a2-b27d-e7d9555ccd11	POST	undefined	/register
-2023-10-23 10:46:58	4f898e61-4393-4b6b-b48f-26de99156eaa	POST	undefined	/auth
-2023-10-23 10:47:42	8edf09e5-08ec-4615-b531-734f3381780a	GET	undefined	/logout
