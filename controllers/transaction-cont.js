@@ -8,7 +8,7 @@ const getAllTransactions = async (req, res) => {
 
 const getUserTransactions = async (req, res) => {
   const { id } = req.params;
-  if (!id) return res.status(400).json({ message: "User not found!" });
+  if (!id) return res.status(400).json({ message: "Invalid userId!" });
   const userTransactions = await Transaction.find({ _id: id });
 
   if (!userTransactions || userTransactions.length === 0) {
