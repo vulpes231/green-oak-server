@@ -16,14 +16,11 @@ const userSchema = new Schema({
     required: true,
     unique: true, // Ensure email addresses are unique
   },
-  firstname: {
+  fullname: {
     type: String,
     required: true,
   },
-  lastname: {
-    type: String,
-    required: true,
-  },
+
   address: {
     type: String,
   },
@@ -42,7 +39,15 @@ const userSchema = new Schema({
   },
   refresh_token: {
     type: String,
-    // Consider storing refresh tokens securely, possibly outside this document
+    default: null,
+  },
+  gender: {
+    type: String,
+    required: true,
+  },
+  dob: {
+    type: String,
+    required: true,
   },
 });
 

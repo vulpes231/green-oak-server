@@ -5,28 +5,35 @@ const { generateAccountNumber } = require("../utils/gen-account");
 
 const createNewUser = async (req, res) => {
   const {
-    firstname,
-    lastname,
+    fullname,
     username,
     password,
     email,
     address,
     account_type,
     phone,
+    gender,
+    dob,
   } = req.body;
 
   if (
     !username ||
     !password ||
-    !firstname ||
-    !lastname ||
+    !fullname ||
     !email ||
     !phone ||
     !address ||
-    !account_type
+    !account_type ||
+    !gender ||
+    !dob
   ) {
     return res.status(400).json({ message: "All fields are required" });
   }
+
+  const duplicateUser = await User.findOne({ email: email }).exec();
+
+  if (duplicateUser)
+    return res.status(409).json({ message: "User already exists" });
 
   let newUser;
   let newAccount;
@@ -40,20 +47,19 @@ const createNewUser = async (req, res) => {
       username: username,
       password: hashedPwd,
       email: email,
-      firstname: firstname,
-      lastname: lastname,
+      fullname: fullname,
       address: address,
       phone: phone,
+      dob: dob,
+      gender: gender,
       account_type: account_type,
       account_no: generateAccountNumber(),
       refresh_token: null, // Handle refresh tokens separately
     });
 
-    // const avail = parseFloat(0).toFixed(2);
-
     // Create a new account for the user
     newAccount = new Account({
-      account_owner: newUser._id, // Use the _id of the user document
+      account_owner: newUser._id,
       account_num: newUser.account_no,
       account_type: newUser.account_type,
       available_bal: 0,

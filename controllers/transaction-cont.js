@@ -8,11 +8,14 @@ const getAllTransactions = async (req, res) => {
 
 const getUserTransactions = async (req, res) => {
   const { id } = req.params;
+  console.log(`userid ${id}`);
   if (!id) return res.status(400).json({ message: "Invalid userId!" });
   const userTransactions = await Transaction.find({ _id: id });
 
   if (!userTransactions || userTransactions.length === 0) {
-    return res.status(400).json({ message: "No accounts found for the user!" });
+    return res
+      .status(400)
+      .json({ message: "No transactions found for the user!" });
   }
   res.status(200).json(userTransactions);
 };

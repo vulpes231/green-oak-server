@@ -34,7 +34,10 @@ function eventLogger(message, logName) {
 }
 
 function logger(req, res, next) {
-  eventLogger(`${req.method}\t${req.headers.origin}\t${req.url}`, "reqlog");
+  eventLogger(
+    `${req.method}\t${req.headers.origin}\t${res.statusCode}`,
+    "reqlog"
+  );
   console.log(`${req.method}\t${req.path}`);
   next();
 }
@@ -56,7 +59,8 @@ const credentials = (req, res, next) => {
 
 const verifyJwt = (req, res, next) => {
   const authHeader = req.headers["authorization"];
-  if (!authHeader) res.status(401).json({ message: "You're not logged in!" });
+  if (!authHeader)
+    return res.status(401).json({ message: "You're not logged in!" });
   console.log(authHeader);
 
   const token = authHeader.split(" ")[1];
