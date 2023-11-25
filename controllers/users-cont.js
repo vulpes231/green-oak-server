@@ -16,15 +16,16 @@ const getUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { email, phone, address, username } = req.body;
+  const { email, phone } = req.body;
+  const id = req.params;
 
-  if (!email && !phone && !address) {
+  if (!email || !phone) {
     return res.status(400).json({ message: "At least one value is required!" });
   }
 
   try {
     // Find the user based on their username
-    const user = await User.findOne({ username }).exec();
+    const user = await User.findOne({ _id: id }).exec();
 
     if (!user) {
       return res.status(400).json({ message: "User not found." });
@@ -33,7 +34,6 @@ const updateUser = async (req, res) => {
     // Update the user's properties if provided
     if (email) user.email = email;
     if (phone) user.phone = phone;
-    if (address) user.address = address;
 
     // Save the updated user document to the database
     await user.save();
