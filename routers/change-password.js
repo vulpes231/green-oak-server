@@ -3,6 +3,6 @@ const { changeUserPassword } = require("../controllers/change-pass");
 
 const router = express.Router();
 
-router.route("/").put(changeUserPassword);
+router.route("/:id").put(changeUserPassword);
 
 module.exports = router;

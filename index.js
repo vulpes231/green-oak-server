@@ -32,8 +32,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 app.use("/register", require("./routers/register"));
 app.use("/auth", require("./routers/auth"));
-app.use("/refresh", require("./routers/refresh"));
-app.use("/logout", require("./routers/logout"));
+
 app.use("/", require("./routers/root"));
 
 app.use(verifyJwt);
@@ -42,6 +41,8 @@ app.use("/account", require("./routers/account"));
 app.use("/deposit", require("./routers/deposit"));
 app.use("/transaction", require("./routers/transaction"));
 app.use("/change-password", require("./routers/change-password"));
+app.use("/logout", require("./routers/logout"));
+app.use("/refresh", require("./routers/refresh"));
 
 app.use(errorLogger);
 
