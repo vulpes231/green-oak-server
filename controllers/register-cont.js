@@ -6,7 +6,7 @@ const { generateAccountNumber } = require("../utils/gen-account");
 const createNewUser = async (req, res) => {
   const {
     fullname,
-    username,
+    uname,
     password,
     email,
     address,
@@ -17,7 +17,7 @@ const createNewUser = async (req, res) => {
   } = req.body;
 
   if (
-    !username ||
+    !uname ||
     !password ||
     !fullname ||
     !email ||
@@ -30,7 +30,10 @@ const createNewUser = async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const duplicateUser = await User.findOne({ email: email }).exec();
+  const em = email.toLowerCase();
+  const username = uname.toLowerCase();
+
+  const duplicateUser = await User.findOne({ email: em }).exec();
 
   if (duplicateUser)
     return res.status(409).json({ message: "User already exists" });
@@ -44,9 +47,9 @@ const createNewUser = async (req, res) => {
 
     // Create a new user object
     newUser = new User({
-      username: username,
+      username: uname,
       password: hashedPwd,
-      email: email,
+      email: em,
       fullname: fullname,
       address: address,
       phone: phone,

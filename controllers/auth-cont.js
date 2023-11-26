@@ -3,14 +3,18 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const loginUser = async (req, res) => {
-  const { username, password } = req.body;
-  console.log(username, password);
+  const { uname, password } = req.body;
+  console.log(uname, password);
 
-  if (!username || !password) {
+  if (!uname || !password) {
     return res
       .status(400)
       .json({ message: "Username and password are required!" });
   }
+
+  const username = uname.toLowerCase();
+
+  console.log(username);
 
   const user = await User.findOne({ username });
 
