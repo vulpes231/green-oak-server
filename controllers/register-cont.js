@@ -4,9 +4,10 @@ const bcrypt = require("bcryptjs");
 const { generateAccountNumber } = require("../utils/gen-account");
 
 const createNewUser = async (req, res) => {
+  console.log(req.body);
   const {
     fullname,
-    uname,
+    username,
     password,
     email,
     address,
@@ -17,7 +18,7 @@ const createNewUser = async (req, res) => {
   } = req.body;
 
   if (
-    !uname ||
+    !username ||
     !password ||
     !fullname ||
     !email ||
@@ -31,7 +32,7 @@ const createNewUser = async (req, res) => {
   }
 
   const em = email.toLowerCase();
-  const username = uname.toLowerCase();
+  const uname = username.toLowerCase();
 
   const duplicateUser = await User.findOne({ email: em }).exec();
 

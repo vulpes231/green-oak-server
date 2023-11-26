@@ -3,20 +3,20 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const loginUser = async (req, res) => {
-  const { uname, password } = req.body;
-  console.log(uname, password);
+  const { username, password } = req.body;
+  console.log(username, password);
 
-  if (!uname || !password) {
+  if (!username || !password) {
     return res
       .status(400)
       .json({ message: "Username and password are required!" });
   }
 
-  const username = uname.toLowerCase();
+  const uname = username.toLowerCase();
 
   console.log(username);
 
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username: uname });
 
   if (!user) {
     return res.status(401).json({ message: "Username does not exist!" });
