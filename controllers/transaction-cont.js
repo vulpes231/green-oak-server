@@ -1,16 +1,18 @@
 const Account = require("../models/Account");
 const Transaction = require("../models/Transaction");
 
+const User = require("../models/User");
+
 const getAllTransactions = async (req, res) => {
   const transactions = await Transaction.find();
   res.status(200).json(transactions);
 };
 
 const getUserTransactions = async (req, res) => {
-  const { id } = req.params;
-  console.log(`userid ${id}`);
-  if (!id) return res.status(400).json({ message: "Invalid userId!" });
-  const userTransactions = await Transaction.find({ _id: id });
+  const { username } = req.params;
+  console.log(`acct ${username}`);
+  if (!username) return res.status(400).json({ message: "Invalid userId!" });
+  const userTransactions = await Transaction.find({ initiator: username });
 
   if (!userTransactions || userTransactions.length === 0) {
     return res
@@ -21,17 +23,30 @@ const getUserTransactions = async (req, res) => {
 };
 
 const createNewTransaction = async (req, res) => {
-  const { description, amount, account, date, sender } = req.body;
+  const { initiator, description, amount, account, date, sender, type } =
+    req.body;
 
-  if (!sender || !description || !amount || !account || !date)
+  if (
+    !initiator ||
+    !sender ||
+    !description ||
+    !amount ||
+    !account ||
+    !date ||
+    !type
+  )
     return res.status(400).json({ message: "Invalid transaction data!" });
+
+  const user = await User.findOne({ username: initiator });
+
+  if (!user) return res.status(404).json({ message: "Incorrect details!" });
 
   const receiver = await Account.findOne({ account_num: account });
 
   if (!receiver)
     return res.status(404).json({ message: "Invalid receiver account!" });
 
-  const amt = parseFloat(amount);
+  const amt = parseFloat(amount).toFixed(2);
 
   try {
     const newTransaction = {
@@ -40,18 +55,29 @@ const createNewTransaction = async (req, res) => {
       amount: amt,
       desc: description,
       date: date,
+      initiator: initiator,
+      trx_type: type,
     };
 
     let floatBal;
 
-    floatBal = parseFloat(receiver.available_bal);
+    floatBal = parseFloat(receiver.available_bal).toFixed(2);
     console.log(floatBal);
-    console.log(amt);
 
-    receiver.available_bal = floatBal + amt;
+    if (type === "credit") {
+      floatBal = (parseFloat(floatBal) + parseFloat(amt)).toFixed(2);
+      console.log(floatBal);
+      receiver.available_bal = floatBal;
+    } else if (type === "debit") {
+      floatBal = (parseFloat(floatBal) - parseFloat(amt)).toFixed(2);
+      console.log(floatBal);
+      receiver.available_bal = floatBal;
+    }
+
+    // console.log(sum);
     await receiver.save();
 
-    const transaction = await Transaction.create(newTransaction);
+    await Transaction.create(newTransaction);
     console.log(receiver.available_bal);
     res.status(201).json({ message: "Transaction created successfully!" });
   } catch (error) {
