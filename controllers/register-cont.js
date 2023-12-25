@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const { generateAccountNumber } = require("../utils/gen-account");
 
 const createNewUser = async (req, res) => {
-  console.log(req.body);
   const {
     fullname,
     username,

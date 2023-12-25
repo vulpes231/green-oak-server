@@ -39,6 +39,8 @@ app.use(verifyJwt);
 app.use("/user", require("./routers/user"));
 app.use("/account", require("./routers/account"));
 app.use("/deposit", require("./routers/deposit"));
+app.use("/transfer", require("./routers/transfer"));
+app.use("/external", require("./routers/external"));
 app.use("/transaction", require("./routers/transaction"));
 app.use("/change-password", require("./routers/change-password"));
 app.use("/logout", require("./routers/logout"));
