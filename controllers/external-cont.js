@@ -1,13 +1,11 @@
 const External = require("../models/External");
 
 const addExternalAccount = async (req, res) => {
-  const { account, routing, nick } = req.body;
+  const { account, routing, nick, type } = req.body;
   const user = req.user;
 
-  console.log(req.user);
-
   if (!user) return res.status(401).json({ message: "Unauthorized access!" });
-  if (!account || !routing)
+  if (!account || !routing || !type)
     return res.status(400).json({ message: "Bad request!" });
 
   try {
@@ -16,6 +14,7 @@ const addExternalAccount = async (req, res) => {
       account: account,
       routing: routing,
       nick: nick || null,
+      type: type,
     });
 
     newExtAccount.save();
@@ -27,4 +26,17 @@ const addExternalAccount = async (req, res) => {
   }
 };
 
-module.exports = { addExternalAccount };
+const getUserExternalAccounts = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const externalAccounts = await External.find({ username: username });
+    if (!externalAccounts.length)
+      return res.status(400).json({ message: "You have no account" });
+    res.status(200).json({ externalAccounts });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "An error occured!" });
+  }
+};
+
+module.exports = { addExternalAccount, getUserExternalAccounts };

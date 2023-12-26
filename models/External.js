@@ -15,6 +15,9 @@ const externalSchema = new Schema({
   nick: {
     type: String,
   },
+  type: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("External", externalSchema);
