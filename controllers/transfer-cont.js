@@ -2,20 +2,20 @@ const Transaction = require("../models/Transaction");
 const Account = require("../models/Account");
 
 const transferMoney = async (req, res) => {
-  const { sender_acct, receiver_acct, amount, memo } = req.body;
+  const { from, to, amount, memo } = req.body;
 
-  if (!sender_acct || !receiver_acct || !amount)
+  if (!from || !to || !amount)
     return res.status(400).json("Invalid transfer details");
 
   const amt = parseFloat(amount);
 
   try {
-    const senderAcct = await Account.findOne({ account_num: sender_acct });
+    const senderAcct = await Account.findOne({ account_num: from });
     if (!senderAcct) return res.status(404).json("Invalid sender account!");
 
     let senderBalance = parseFloat(senderAcct.available_bal);
 
-    const receiverAcct = await Account.findOne({ account_num: receiver_acct });
+    const receiverAcct = await Account.findOne({ account_num: to });
     if (!receiverAcct) return res.status(404).json("Invalid receiver account!");
 
     let receiverBalance = parseFloat(receiverAcct.available_bal);
@@ -31,8 +31,8 @@ const transferMoney = async (req, res) => {
     await receiverAcct.save();
 
     const newTransaction = new Transaction({
-      sender: sender_acct,
-      receiver: receiver_acct,
+      sender: from,
+      receiver: to,
       amount: amount,
       desc: memo || null,
       date: new Date(),
