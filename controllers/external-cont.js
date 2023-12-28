@@ -8,6 +8,10 @@ const addExternalAccount = async (req, res) => {
   if (!account || !routing || !type)
     return res.status(400).json({ message: "Bad request!" });
 
+  const duplicate = await External.findOne({ account });
+
+  if (duplicate) return res.status(409).json("Account already exists!");
+
   try {
     const newExtAccount = new External({
       username: user,
