@@ -10,7 +10,8 @@ const addExternalAccount = async (req, res) => {
 
   const duplicate = await External.findOne({ account });
 
-  if (duplicate) return res.status(409).json("Account already exists!");
+  if (duplicate)
+    return res.status(409).json({ message: "Account already exists!" });
 
   try {
     const newExtAccount = new External({

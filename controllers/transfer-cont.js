@@ -5,23 +5,25 @@ const transferMoney = async (req, res) => {
   const { from, to, amount, memo } = req.body;
 
   if (!from || !to || !amount)
-    return res.status(400).json("Invalid transfer details");
+    return res.status(400).json({ message: "Invalid transfer details" });
 
   const amt = parseFloat(amount);
 
   try {
     const senderAcct = await Account.findOne({ account_num: from });
-    if (!senderAcct) return res.status(404).json("Invalid sender account!");
+    if (!senderAcct)
+      return res.status(404).json({ message: "Invalid sender account!" });
 
     let senderBalance = parseFloat(senderAcct.available_bal);
 
     const receiverAcct = await Account.findOne({ account_num: to });
-    if (!receiverAcct) return res.status(404).json("Invalid receiver account!");
+    if (!receiverAcct)
+      return res.status(404).json({ message: "Invalid receiver account!" });
 
     let receiverBalance = parseFloat(receiverAcct.available_bal);
 
     if (senderBalance < amount)
-      return res.status(400).json("Insufficient funds!");
+      return res.status(400).json({ message: "Insufficient funds!" });
 
     //   update the accounts appropriately
     senderBalance = senderBalance -= amt;
