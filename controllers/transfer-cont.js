@@ -2,11 +2,11 @@ const Transaction = require("../models/Transaction");
 const Account = require("../models/Account");
 
 const transferMoney = async (req, res) => {
-  const { from, to, amount, memo } = req.body;
+  const { from, to, amount, memo, date } = req.body;
 
   clg;
 
-  if (!from || !to || !amount)
+  if (!from || !to || !amount || !date)
     return res.status(400).json({ message: "Invalid transfer details" });
 
   const amt = parseFloat(amount);
@@ -42,8 +42,8 @@ const transferMoney = async (req, res) => {
       sender: from,
       receiver: to,
       amount: amount,
-      desc: memo || null,
-      date: new Date(),
+      desc: memo || "External Transfer",
+      date: date,
     });
 
     await newTransaction.save();
