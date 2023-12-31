@@ -1,6 +1,6 @@
 const Transaction = require("../models/Transaction");
 const Account = require("../models/Account");
-const { format } = require("date-fns");
+const { format, parseISO } = require("date-fns");
 
 const transferMoney = async (req, res) => {
   const { from, to, amount, memo, date } = req.body;
@@ -8,11 +8,11 @@ const transferMoney = async (req, res) => {
   if (!from || !to || !amount || !date)
     return res.status(400).json({ message: "Invalid transfer details" });
 
-  const amt = parseFloat(amount);
-
-  const currentDate = format(date, "MM/dd/yyyy");
-
   try {
+    const amt = parseFloat(amount);
+
+    const currentDate = parseISO(date);
+    const myDate = format(currentDate, "MM/dd/yyyy");
     const senderAcct = await Account.findOne({ account_num: from });
     if (!senderAcct)
       return res.status(404).json({ message: "Invalid sender account!" });
@@ -42,9 +42,9 @@ const transferMoney = async (req, res) => {
       initiator: req.user,
       sender: from,
       receiver: to,
-      amount: amount,
+      amount: amt,
       desc: memo || "External Transfer",
-      date: currentDate,
+      date: myDate,
     });
 
     await newTransaction.save();
