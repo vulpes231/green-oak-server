@@ -4,6 +4,8 @@ const Account = require("../models/Account");
 const transferMoney = async (req, res) => {
   const { from, to, amount, memo } = req.body;
 
+  clg;
+
   if (!from || !to || !amount)
     return res.status(400).json({ message: "Invalid transfer details" });
 
@@ -36,6 +38,7 @@ const transferMoney = async (req, res) => {
     // console.log("After trx", senderAcct.available_bal);
 
     const newTransaction = new Transaction({
+      initiator: req.user,
       sender: from,
       receiver: to,
       amount: amount,
