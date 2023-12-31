@@ -15,22 +15,25 @@ const transferMoney = async (req, res) => {
       return res.status(404).json({ message: "Invalid sender account!" });
 
     let senderBalance = parseFloat(senderAcct.available_bal);
+    // console.log("Before trx", senderAcct.available_bal);
 
-    const receiverAcct = await Account.findOne({ account_num: to });
-    if (!receiverAcct)
-      return res.status(404).json({ message: "Invalid receiver account!" });
+    // const receiverAcct = await Account.findOne({ account_num: to });
+    // if (!receiverAcct)
+    //   return res.status(404).json({ message: "Invalid receiver account!" });
 
-    let receiverBalance = parseFloat(receiverAcct.available_bal);
+    // let receiverBalance = parseFloat(receiverAcct.available_bal);
 
     if (senderBalance < amount)
       return res.status(400).json({ message: "Insufficient funds!" });
 
     //   update the accounts appropriately
-    senderBalance = senderBalance -= amt;
-    receiverBalance = receiverBalance += amt;
+    senderBalance = senderAcct.available_bal -= amt;
+    // receiverBalance = receiverBalance += amt;
 
     await senderAcct.save();
-    await receiverAcct.save();
+    // await receiverAcct.save();
+
+    // console.log("After trx", senderAcct.available_bal);
 
     const newTransaction = new Transaction({
       sender: from,

@@ -23,23 +23,10 @@ const getUserTransactions = async (req, res) => {
 };
 
 const createNewTransaction = async (req, res) => {
-  const { initiator, description, amount, account, date, sender, type } =
-    req.body;
+  const { description, amount, account, date, sender, type } = req.body;
 
-  if (
-    !initiator ||
-    !sender ||
-    !description ||
-    !amount ||
-    !account ||
-    !date ||
-    !type
-  )
+  if (!sender || !description || !amount || !account || !date || !type)
     return res.status(400).json({ message: "Invalid transaction data!" });
-
-  const user = await User.findOne({ username: initiator });
-
-  if (!user) return res.status(404).json({ message: "Incorrect details!" });
 
   const receiver = await Account.findOne({ account_num: account });
 
@@ -55,7 +42,6 @@ const createNewTransaction = async (req, res) => {
       amount: amt,
       desc: description,
       date: date,
-      initiator: initiator,
       trx_type: type,
     };
 
