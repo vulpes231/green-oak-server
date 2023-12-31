@@ -5,8 +5,6 @@ const { format } = require("date-fns");
 const transferMoney = async (req, res) => {
   const { from, to, amount, memo, date } = req.body;
 
-  clg;
-
   if (!from || !to || !amount || !date)
     return res.status(400).json({ message: "Invalid transfer details" });
 
