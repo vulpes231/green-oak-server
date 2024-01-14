@@ -26,7 +26,7 @@ const createNewTransaction = async (req, res) => {
   const { initiator, description, amount, account, date, sender, type } =
     req.body;
 
-  console.log(req.body);
+  console.log("req", req.body);
 
   if (
     !initiator ||
