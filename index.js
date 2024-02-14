@@ -34,6 +34,7 @@ app.use("/register", require("./routers/register"));
 app.use("/auth", require("./routers/auth"));
 app.use("/create-admin", require("./routers/admin"));
 app.use("/signin", require("./routers/loginadmin"));
+app.use("/transaction", require("./routers/transaction"));
 
 app.use("/", require("./routers/root"));
 
@@ -52,5 +53,7 @@ app.use(errorLogger);
 
 mongoose.connection.once("open", () => {
   console.log(`Connected to database...`);
-  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+  app.listen(PORT, () =>
+    console.log(`Server started on port http://localhost:${PORT}`)
+  );
 });

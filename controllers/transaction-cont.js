@@ -86,10 +86,44 @@ const createNewTransaction = async (req, res) => {
   }
 };
 
-const deleteTransactions = (req, res) => {};
+const deleteTransactions = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find the transaction by ID
+    const trans = await Transaction.findById(id);
+    if (!trans) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    const acctNumber = trans.receiver;
+    const amount = trans.amount;
+
+    // Find the account associated with the transaction
+    const account = await Account.findOne({ account_num: acctNumber });
+    if (!account) {
+      return res.status(404).json({ error: "Account not found" });
+    }
+
+    // Update the available balance
+    account.available_bal -= amount;
+
+    // Save the updated account
+    await account.save();
+
+    // Delete the transaction
+    await trans.deleteOne();
+
+    res.sendStatus(204);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 module.exports = {
   createNewTransaction,
   getUserTransactions,
   getAllTransactions,
+  deleteTransactions,
 };
