@@ -6,7 +6,6 @@ const {
 
 const router = express.Router();
 
-router.route("/").post(addExternalAccount);
-router.route("/:username").get(getUserExternalAccounts);
+router.route("/").get(getUserExternalAccounts).post(addExternalAccount);
 
 module.exports = router;

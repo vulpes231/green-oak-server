@@ -1,82 +1,49 @@
 const Account = require("../models/Account");
 const Transaction = require("../models/Transaction");
 
-const User = require("../models/User");
-
 const getAllTransactions = async (req, res) => {
-  const transactions = await Transaction.find();
-  res.status(200).json(transactions);
+  try {
+    const transactions = await Transaction.find();
+    res.status(200).json({ transactions });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const getUserTransactions = async (req, res) => {
-  const { username } = req.params;
-  console.log(`acct ${username}`);
-  if (!username) return res.status(400).json({ message: "Invalid userId!" });
-  const userTransactions = await Transaction.find({ initiator: username });
+  const userId = req.userId;
+  try {
+    const userTransactions = await Transaction.find({ initiator: userId });
 
-  if (!userTransactions || userTransactions.length === 0) {
-    return res
-      .status(400)
-      .json({ message: "No transactions found for the user!" });
+    res.status(200).json({ userTransactions });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-  res.status(200).json(userTransactions);
 };
 
 const createNewTransaction = async (req, res) => {
-  const { initiator, description, amount, account, date, sender, type } =
-    req.body;
+  const { description, amount, account, date, type } = req.body;
 
-  console.log("req", req.body);
-
-  if (
-    !initiator ||
-    !sender ||
-    !description ||
-    !amount ||
-    !account ||
-    !date ||
-    !type
-  )
+  if (!amount || !account || !date || !type)
     return res.status(400).json({ message: "Invalid transaction data!" });
 
-  const receiver = await Account.findOne({ account_num: account });
-
-  if (!receiver)
-    return res.status(404).json({ message: "Invalid receiver account!" });
-
-  const amt = parseFloat(amount).toFixed(2);
-
   try {
+    const receiverAccount = await Account.findOne({ account_num: account });
+    if (!receiverAccount)
+      return res.status(404).json({ message: "Invalid reciever account!" });
+    const amt = parseFloat(amount);
+
     const newTransaction = {
-      initiator: initiator,
-      sender: sender,
-      receiver: account,
+      owner: receiverAccount.account_owner,
       amount: amt,
       desc: description,
       date: date,
       trx_type: type,
+      accountNum: receiverAccount.account_num,
     };
 
-    let floatBal;
-
-    floatBal = parseFloat(receiver.available_bal).toFixed(2);
-    console.log(floatBal);
-
-    if (type === "credit") {
-      floatBal = (parseFloat(floatBal) + parseFloat(amt)).toFixed(2);
-      console.log(floatBal);
-      receiver.available_bal = floatBal;
-    } else if (type === "debit") {
-      floatBal = (parseFloat(floatBal) - parseFloat(amt)).toFixed(2);
-      console.log(floatBal);
-      receiver.available_bal = floatBal;
-    }
-
-    // console.log(sum);
-    await receiver.save();
-
     await Transaction.create(newTransaction);
-    console.log(receiver.available_bal);
+
     res.status(201).json({ message: "Transaction created successfully!" });
   } catch (error) {
     console.log(error);
@@ -90,13 +57,12 @@ const deleteTransactions = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Find the transaction by ID
     const trans = await Transaction.findById(id);
     if (!trans) {
       return res.status(404).json({ error: "Transaction not found" });
     }
 
-    const acctNumber = trans.receiver;
+    const acctNumber = trans.accountNum;
     const amount = trans.amount;
 
     // Find the account associated with the transaction

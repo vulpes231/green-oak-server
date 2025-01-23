@@ -9,10 +9,10 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getAllTransactions).post(createNewTransaction);
+router.route("/admin").get(getAllTransactions).post(createNewTransaction);
 
-router.route("/:username").get(getUserTransactions);
+router.route("/").get(getUserTransactions);
 
-router.route("/delete/:id").delete(deleteTransactions);
+router.route("/:id").delete(deleteTransactions);
 
 module.exports = router;

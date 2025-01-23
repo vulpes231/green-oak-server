@@ -4,15 +4,12 @@ const Deposit = require("../models/Deposit");
 
 const depositCheck = async (req, res) => {
   const { deposit_to, amount } = req.body;
-  const { id } = req.params;
-
-  console.log(req.body);
-  console.log(id);
+  const userId = req.userId;
 
   if (!deposit_to || !amount)
     return res.status(400).json({ message: "Enter deposit details!" });
 
-  const userAccount = await Account.findOne({ account_owner: id }).exec();
+  const userAccount = await Account.findOne({ account_owner: userId }).exec();
 
   if (!userAccount)
     return res.status(404).json({ message: "Invalid user account!" });
@@ -23,7 +20,7 @@ const depositCheck = async (req, res) => {
 
   try {
     const newDeposit = {
-      depositor: id,
+      depositor: userId,
       deposit_account: deposit_to,
       amount: amount,
       deposit_date: depositDate,
@@ -31,7 +28,7 @@ const depositCheck = async (req, res) => {
     };
 
     const deposit = await Deposit.create(newDeposit);
-    console.log(deposit);
+
     res.status(201).json({ message: "Check deposit successful" });
   } catch (error) {
     console.log(error);

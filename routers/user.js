@@ -6,7 +6,7 @@ const {
 } = require("../controllers/users-cont");
 const router = express.Router();
 
-router.route("/").get(getAllUsers);
-router.route("/:id").get(getUser).put(updateUser);
+router.route("/all").get(getAllUsers);
+router.route("/").get(getUser).put(updateUser);
 
 module.exports = router;

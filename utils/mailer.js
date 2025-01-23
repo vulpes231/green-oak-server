@@ -30,7 +30,7 @@ const sendMail = async (email, subject, message) => {
     console.error("Error sending email: ", error);
     const fs = require("fs");
     fs.appendFileSync(
-      "mailerror_log.txt",
+      "logs/mailerror_log.txt",
       `Error sending email: ${error.message}\n`
     );
   }

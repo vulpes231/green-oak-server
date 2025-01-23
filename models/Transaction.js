@@ -3,16 +3,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const transactionSchema = new Schema({
-  initiator: {
-    type: String,
-    required: true,
-  },
-  sender: {
-    type: String,
-    required: true,
-  },
-  receiver: {
-    type: String,
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   amount: {
@@ -27,6 +20,9 @@ const transactionSchema = new Schema({
     required: true,
   },
   trx_type: {
+    type: String,
+  },
+  accountNum: {
     type: String,
   },
 });

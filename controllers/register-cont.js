@@ -30,18 +30,17 @@ const createNewUser = async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const em = email.toLowerCase();
-  const uname = username.toLowerCase();
-
-  const duplicateUser = await User.findOne({ email: em }).exec();
-
-  if (duplicateUser)
-    return res.status(409).json({ message: "User already exists" });
-
-  let newUser;
-  let newAccount;
-
   try {
+    const em = email.toLowerCase();
+    const uname = username.toLowerCase();
+
+    const duplicateUser = await User.findOne({ email: em }).exec();
+
+    if (duplicateUser)
+      return res.status(409).json({ message: "User already exists" });
+
+    let newUser;
+    let newAccount;
     // Hash the password
     const hashedPwd = await bcrypt.hash(password, 10);
 
@@ -57,28 +56,21 @@ const createNewUser = async (req, res) => {
       gender: gender,
       account_type: account_type,
       account_no: generateAccountNumber(),
-      refresh_token: null, // Handle refresh tokens separately
+      refresh_token: null,
     });
 
-    // Create a new account for the user
     newAccount = new Account({
       account_owner: newUser._id,
       account_num: newUser.account_no,
       account_type: newUser.account_type,
-      available_bal: 0,
     });
 
-    // Start a session for the transaction
     const session = await User.startSession();
     session.startTransaction();
 
-    // Save the user
     await newUser.save({ session });
-
-    // Save the account
     await newAccount.save({ session });
 
-    // Commit the transaction
     await session.commitTransaction();
     session.endSession();
 
