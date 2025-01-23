@@ -4,22 +4,21 @@ const jwt = require("jsonwebtoken");
 
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
+  console.log(req.body);
   if (!username || !password) {
-    return res
-      .status(400)
-      .json({ message: "Username and password are required!" });
+    return res.status(400).json({ message: "Bad request!" });
   }
 
   try {
     const uname = username.toLowerCase();
     const user = await User.findOne({ username: uname });
     if (!user) {
-      return res.status(401).json({ message: "Username does not exist!" });
+      return res.status(401).json({ message: "User does not exist!" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid username or password!" });
+      return res.status(401).json({ message: "Invalid username OR password!" });
     }
 
     const accessToken = jwt.sign(

@@ -5,7 +5,7 @@ const userSchema = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true, // Ensure usernames are unique
+    unique: true,
   },
   password: {
     type: String,
@@ -14,19 +14,17 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true, // Ensure email addresses are unique
+    unique: true,
   },
   fullname: {
     type: String,
     required: true,
   },
-
   address: {
     type: String,
   },
   phone: {
     type: String,
-    // Add validation logic for phone numbers here if needed
   },
   account_type: {
     type: String,
@@ -35,7 +33,7 @@ const userSchema = new Schema({
   account_no: {
     type: String,
     required: true,
-    unique: true, // Ensure account numbers are unique
+    unique: true,
   },
   refresh_token: {
     type: String,
@@ -51,4 +49,6 @@ const userSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;

@@ -35,17 +35,12 @@ const createNewUser = async (req, res) => {
     const uname = username.toLowerCase();
 
     const duplicateUser = await User.findOne({ email: em }).exec();
-
     if (duplicateUser)
       return res.status(409).json({ message: "User already exists" });
 
-    let newUser;
-    let newAccount;
-    // Hash the password
     const hashedPwd = await bcrypt.hash(password, 10);
 
-    // Create a new user object
-    newUser = new User({
+    const newUser = {
       username: uname,
       password: hashedPwd,
       email: em,
@@ -54,37 +49,18 @@ const createNewUser = async (req, res) => {
       phone: phone,
       dob: dob,
       gender: gender,
+    };
+    await User.create(newUser);
+
+    const newAccount = {
       account_type: account_type,
       account_no: generateAccountNumber(),
-      refresh_token: null,
-    });
-
-    newAccount = new Account({
       account_owner: newUser._id,
-      account_num: newUser.account_no,
-      account_type: newUser.account_type,
-    });
-
-    const session = await User.startSession();
-    session.startTransaction();
-
-    await newUser.save({ session });
-    await newAccount.save({ session });
-
-    await session.commitTransaction();
-    session.endSession();
+    };
+    await Account.create(newAccount);
 
     res.status(201).json({ message: `New User ${username} created!` });
   } catch (err) {
-    if (newUser) {
-      // If user creation was attempted, delete the user to roll back the transaction
-      await newUser.deleteOne();
-    }
-    if (newAccount) {
-      // If account creation was attempted, delete the account to roll back the transaction
-      await newAccount.deleteOne();
-    }
-
     res.status(500).json({ message: err.message });
   }
 };
