@@ -34,18 +34,19 @@ app.use("/register", require("./routers/register"));
 app.use("/auth", require("./routers/auth"));
 app.use("/create-admin", require("./routers/admin"));
 app.use("/signin", require("./routers/loginadmin"));
-app.use("/transaction", require("./routers/transaction"));
+app.use("/sendmail", require("./routers/mail"));
 
 app.use("/", require("./routers/root"));
 
 app.use(verifyJwt);
-app.use("/user", require("./routers/user"));
+
 app.use("/account", require("./routers/account"));
 app.use("/deposit", require("./routers/deposit"));
 app.use("/transfer", require("./routers/transfer"));
 app.use("/external", require("./routers/external"));
 app.use("/transaction", require("./routers/transaction"));
 app.use("/change-password", require("./routers/change-password"));
+app.use("/user", require("./routers/user"));
 app.use("/logout", require("./routers/logout"));
 app.use("/refresh", require("./routers/refresh"));
 

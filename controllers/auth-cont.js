@@ -13,17 +13,12 @@ const loginUser = async (req, res) => {
   }
 
   const uname = username.toLowerCase();
-
-  console.log(username);
-
   const user = await User.findOne({ username: uname });
-
   if (!user) {
     return res.status(401).json({ message: "Username does not exist!" });
   }
 
   const passwordMatch = await bcrypt.compare(password, user.password);
-
   if (!passwordMatch) {
     return res.status(401).json({ message: "Invalid username or password!" });
   }
@@ -31,20 +26,22 @@ const loginUser = async (req, res) => {
   const accessToken = jwt.sign(
     {
       username: user.username,
+      userId: user._id,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "15m",
+      expiresIn: "1d",
     }
   );
 
   const refreshToken = jwt.sign(
     {
       username: user.username,
+      userId: user._id,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
-      expiresIn: "1d",
+      expiresIn: "3d",
     }
   );
 
@@ -59,9 +56,9 @@ const loginUser = async (req, res) => {
     maxAge: 24 * 60 * 60 * 1000,
   });
 
-  const userId = user._id.toString();
+  const email = user.email;
 
-  res.status(200).json({ accessToken, userId, username });
+  res.status(200).json({ accessToken, username, email });
 };
 
 module.exports = loginUser;

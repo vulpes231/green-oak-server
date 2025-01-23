@@ -8,22 +8,17 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 function eventLogger(message, logName) {
-  // Create a formatted date item
   const dateItem = format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-  // Create the log item
   const logItem = `${dateItem}\t${uuid()}\t${message}\n`;
 
-  // Check if the log folder exists in the root directory, and create it if not
   const logFolder = "logs";
   if (!fs.existsSync(logFolder)) {
     fs.mkdirSync(logFolder);
   }
 
-  // Define the log file path
   const logFilePath = `./${logFolder}/${logName}.txt`;
 
-  // Append the log item to the log file
   fs.appendFile(logFilePath, logItem, (err) => {
     if (err) {
       console.error("Error writing to log file:", err);
@@ -69,6 +64,7 @@ const verifyJwt = (req, res, next) => {
       res.status(403).json({ message: "Session expired. please login again" });
     } else {
       req.user = decoded.username;
+      req.userId = decoded.userId;
       next();
     }
   });

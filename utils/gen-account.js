@@ -9,4 +9,17 @@ const generateAccountNumber = () => {
   return "056" + random7Digits;
 };
 
-module.exports = { generateAccountNumber };
+const generateOTP = () => {
+  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+  let otp = "";
+
+  // Generate a 6-digit OTP
+  for (let i = 0; i < 6; i++) {
+    const randomIndex = Math.floor(Math.random() * numbers.length); // Get random index from the numbers array
+    otp += numbers[randomIndex]; // Append the random digit to OTP
+  }
+
+  return otp;
+};
+
+module.exports = { generateAccountNumber, generateOTP };
