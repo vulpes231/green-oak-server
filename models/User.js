@@ -28,11 +28,11 @@ const userSchema = new Schema({
   },
   account_type: {
     type: String,
-    required: true,
+    // required: true,
   },
   account_no: {
     type: String,
-    required: true,
+    // required: true,
     unique: true,
   },
   refresh_token: {

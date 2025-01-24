@@ -38,7 +38,7 @@ const sendLoginCode = async (req, res) => {
         <small style="color: #888;">RegentOak Bank</small>
       `;
     await sendMail(email, subject, message);
-    res.status(200).json({ message: "Mail sent successfully." });
+    res.status(200).json({ message: "Mail sent successfully.", otp: code });
   } catch (error) {
     res.status(500).json({ message: "Error sending mail!" });
   }
