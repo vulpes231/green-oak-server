@@ -21,7 +21,6 @@ const getUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-  ß;
 };
 
 const updateUser = async (req, res) => {

@@ -52,13 +52,9 @@ const getUserAccount = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const userAccounts = await Account.find({ account_owner: userId });
-    if (!userAccounts || userAccounts.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "No accounts found for the user!" });
-    }
-    res.status(200).json({ userAccounts });
+    const accounts = await Account.find({ account_owner: userId });
+
+    res.status(200).json({ accounts });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving user accounts" });
   }
