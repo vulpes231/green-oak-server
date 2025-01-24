@@ -47,10 +47,8 @@ const createNewUser = async (req, res) => {
       return res.status(409).json({ message: "User already exists" });
     }
 
-    // Hash the password
     const hashedPwd = await bcrypt.hash(password, 10);
 
-    // Create a new user object
     const newUser = {
       username: uname,
       password: hashedPwd,
@@ -62,29 +60,23 @@ const createNewUser = async (req, res) => {
       gender: gender,
     };
 
-    // Create the user in the database
-    const createdUser = await User.create([newUser], { session }); // Pass session here
+    const createdUser = await User.create([newUser], { session });
 
-    // Create a new account linked to the user
     const newAccount = {
       account_type: account_type,
-      account_no: generateAccountNumber(),
-      account_owner: createdUser[0]._id, // createdUser is an array, get the first user
+      account_num: generateAccountNumber(),
+      account_owner: createdUser[0]._id,
     };
 
-    // Create the account in the database
-    await Account.create([newAccount], { session }); // Pass session here
+    await Account.create([newAccount], { session });
 
-    // Commit the transaction if everything is successful
     await session.commitTransaction();
 
     res.status(201).json({ message: `New User ${username} created!` });
   } catch (err) {
-    // If any error occurs, abort the transaction to ensure data consistency
     await session.abortTransaction();
     res.status(500).json({ message: err.message });
   } finally {
-    // End the session
     session.endSession();
   }
 };

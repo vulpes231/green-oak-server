@@ -4,6 +4,6 @@ const { emailUser, sendLoginCode } = require("../controllers/mail-cont");
 const router = Router();
 
 router.route("/").post(emailUser);
-router.route("/loginotp").post(sendLoginCode);
+router.route("/login").post(sendLoginCode);
 
 module.exports = router;

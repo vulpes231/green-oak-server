@@ -13,6 +13,8 @@ const emailUser = async (req, res) => {
 
 const sendLoginCode = async (req, res) => {
   const { email } = req.body;
+
+  console.log(email);
   try {
     const subject = "RegentOak Bank - Your Login Code";
     const code = generateOTP();
