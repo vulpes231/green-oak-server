@@ -1,8 +1,5 @@
 const User = require("../models/User");
 
-const fsPromises = require("fs").promises;
-const path = require("path");
-
 const handleUserLogout = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(204);

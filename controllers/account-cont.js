@@ -60,4 +60,31 @@ const getUserAccount = async (req, res) => {
   }
 };
 
-module.exports = { createNewAccount, getAllAccounts, getUserAccount };
+const updateBalance = async (req, res) => {
+  const { account_num, amount } = req.body;
+
+  if (!account_num || !amount)
+    return res.status(400).json({ message: "All fields required" });
+
+  try {
+    const account = await Account.findOne({ account_num });
+    if (!account)
+      return res.status(404).json({ message: "Account not found!" });
+
+    account.current_bal += amount;
+    account.available_bal += amount;
+
+    await account.save();
+
+    res.status(200).json({ message: "Account balance updated!" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  createNewAccount,
+  getAllAccounts,
+  getUserAccount,
+  updateBalance,
+};
