@@ -1,6 +1,6 @@
 const Account = require("../models/Account");
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const { generateAccountNumber } = require("../utils/gen-account");
 const { sendMail } = require("../utils/mailer");
 // sendMail
