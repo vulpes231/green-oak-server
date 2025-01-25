@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require("fs");
-const fsPromises = require("fs").promises;
 const { v4: uuid } = require("uuid");
 const { format } = require("date-fns");
 const allowedOrigins = require("../configs/allowed-origins");
@@ -44,7 +43,7 @@ function errorLogger(err, req, res, next) {
 }
 
 const credentials = (req, res, next) => {
-  const origin = req.headers.origin;
+  const origin = req.headers.Origin;
   if (allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Credentials", true);
     res.header("Access-Control-Allow-Origin", origin);

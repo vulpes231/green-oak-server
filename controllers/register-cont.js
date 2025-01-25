@@ -2,7 +2,8 @@ const Account = require("../models/Account");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const { generateAccountNumber } = require("../utils/gen-account");
-
+const { sendMail } = require("../utils/mailer");
+// sendMail
 const createNewUser = async (req, res) => {
   const {
     fullname,
@@ -69,6 +70,20 @@ const createNewUser = async (req, res) => {
     };
 
     await Account.create([newAccount], { session });
+    //   const message = `
+    //   <h3>Dear ${username},</h3>
+    //   <p>Your account has been created successfully.</p>
+    //   <p>Kindly proceed to login to your dashboard</p>
+    //   <a style="color: #888;" href="https://regentoak.us">
+    //     Login
+    //   </a>
+    //   <p>If you are unable to login, please contact our support team immediately.</p>
+    //   <br />
+    //   <small style="color: #888;">This is an automated message. Please do not reply.</small><br />
+    //   <small style="color: #888;">RegentOak Bank</small>
+    // `;
+
+    //   await sendMail(email, "Account Created", message);
 
     await session.commitTransaction();
 
