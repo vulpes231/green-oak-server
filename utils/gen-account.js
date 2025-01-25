@@ -6,7 +6,7 @@ const generateRandom7Digits = () => {
 
 const generateAccountNumber = () => {
   const random7Digits = generateRandom7Digits();
-  return "4012" + random7Digits; //056
+  return "056" + random7Digits; //056
 };
 
 const generateOTP = () => {
