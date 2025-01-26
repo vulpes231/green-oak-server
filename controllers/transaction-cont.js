@@ -13,7 +13,7 @@ const getAllTransactions = async (req, res) => {
 const getUserTransactions = async (req, res) => {
   const userId = req.userId;
   try {
-    const userTransactions = await Transaction.find({ initiator: userId });
+    const userTransactions = await Transaction.find({ owner: userId });
 
     res.status(200).json({ userTransactions });
   } catch (error) {
@@ -30,7 +30,7 @@ const createNewTransaction = async (req, res) => {
   try {
     const receiverAccount = await Account.findOne({ account_num: account });
     if (!receiverAccount)
-      return res.status(404).json({ message: "Invalid reciever account!" });
+      return res.status(404).json({ message: "Invalid receiver account!" });
     const amt = parseFloat(amount);
 
     const newTransaction = {
@@ -41,6 +41,16 @@ const createNewTransaction = async (req, res) => {
       trx_type: type,
       accountNum: receiverAccount.account_num,
     };
+
+    if (type === "deposit") {
+      receiverAccount.available_bal += amt;
+    } else if (type === "withdraw") {
+      if (receiverAccount.available_bal < amt)
+        return res.status(400).json({ message: "Insufficient funds!" });
+      receiverAccount.available_bal -= amt;
+    }
+
+    await receiverAccount.save();
 
     await Transaction.create(newTransaction);
 
