@@ -64,6 +64,7 @@ const verifyJwt = (req, res, next) => {
     } else {
       req.user = decoded.username;
       req.userId = decoded.userId;
+      req.adminId = decoded.adminId;
       next();
     }
   });

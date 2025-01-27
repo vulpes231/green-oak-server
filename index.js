@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use("/register", require("./routers/register"));
 app.use("/auth", require("./routers/auth"));
 app.use("/create-admin", require("./routers/admin"));
-app.use("/signin", require("./routers/loginadmin"));
+app.use("/signin", require("./routers/admin"));
 app.use("/otp", require("./routers/mail"));
 
 app.use("/", require("./routers/root"));

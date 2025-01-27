@@ -1,5 +1,4 @@
 const Admin = require("../models/Admin");
-
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -7,7 +6,7 @@ const createAdmin = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password)
-    return res.status(400).json({ message: "Invalid request!" });
+    return res.status(400).json({ message: "Invalid credentials!" });
 
   try {
     const duplicateUser = await Admin.findOne({ username });
@@ -38,7 +37,7 @@ const loginAdmin = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password)
-    return res.status(400).json({ message: "Invalid request!" });
+    return res.status(400).json({ message: "Invalid credntials!" });
 
   try {
     const user = await Admin.findOne({ username });
@@ -53,22 +52,22 @@ const loginAdmin = async (req, res) => {
     const accessToken = jwt.sign(
       {
         username: user.username,
-        id: user._id,
+        adminId: user._id,
       },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "15m",
+        expiresIn: "1d",
       }
     );
 
     const refreshToken = jwt.sign(
       {
         username: user.username,
-        id: user._id,
+        adminId: user._id,
       },
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "3d",
       }
     );
 
@@ -89,7 +88,28 @@ const loginAdmin = async (req, res) => {
   }
 };
 
-const logoutAdmin = async (req, res) => {};
+const logoutAdmin = async (req, res) => {
+  try {
+    const user = await Admin.findOne({ refreshToken: req.cookies.jwt });
+
+    if (user) {
+      user.refreshToken = null;
+      await user.save();
+    }
+
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      expires: new Date(0),
+    });
+
+    res.status(200).json({ message: "Logged out successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An error occurred while logging out." });
+  }
+};
 
 module.exports = {
   loginAdmin,
