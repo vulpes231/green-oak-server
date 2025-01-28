@@ -3,7 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const { generateAccountNumber } = require("../utils/gen-account");
 const { sendMail } = require("../utils/mailer");
-// sendMail
+
 const createNewUser = async (req, res) => {
   const {
     fullname,

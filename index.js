@@ -47,8 +47,8 @@ app.use("/external", require("./routers/external"));
 app.use("/transaction", require("./routers/transaction"));
 app.use("/change-password", require("./routers/change-password"));
 app.use("/user", require("./routers/user"));
-app.use("/logout", require("./routers/logout"));
 app.use("/refresh", require("./routers/refresh"));
+app.use("/manageuser", require("./routers/usercontrol"));
 
 app.use(errorLogger);
 

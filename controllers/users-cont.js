@@ -3,15 +3,6 @@ const External = require("../models/External");
 const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 
-const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json({ users });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const getUser = async (req, res) => {
   const userId = req.userId;
   try {
@@ -51,57 +42,39 @@ const updateUser = async (req, res) => {
   }
 };
 
-const deleteUser = async (req, res) => {
-  const { userId } = req.params;
-
-  const session = await User.startSession();
-  session.startTransaction();
+const logoutUser = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(204);
+  const refreshToken = cookies.jwt;
 
   try {
-    const user = await User.findById(userId).session(session);
+    const user = await User.findOne({ refresh_token: refreshToken });
+
     if (!user) {
-      await session.abortTransaction();
-      return res.status(404).json({ message: "User not found" });
+      res.clearCookie("jwt", {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+      });
+      return res.sendStatus(401);
+    } else {
+      user.refresh_token = null;
+      await user.save();
+
+      // Clear the cookie
+      res.clearCookie("jwt", {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+      });
+
+      // Return a 204 status code indicating a successful logout
+      return res.sendStatus(204);
     }
-
-    const accounts = await Account.find({ account_owner: userId }).session(
-      session
-    );
-
-    const transactions = await Transaction.find({ owner: userId }).session(
-      session
-    );
-
-    const externalAccounts = await External.find({ owner: userId }).session(
-      session
-    );
-
-    if (accounts.length > 0) {
-      await Account.deleteMany({ account_owner: userId }).session(session);
-    }
-
-    if (transactions.length > 0) {
-      await Transaction.deleteMany({ owner: userId }).session(session);
-    }
-
-    if (externalAccounts.length > 0) {
-      await External.deleteMany({ owner: userId }).session(session);
-    }
-
-    await User.findByIdAndDelete(userId).session(session);
-
-    await session.commitTransaction();
-
-    res
-      .status(200)
-      .json({ message: "User and associated data deleted successfully" });
   } catch (error) {
-    await session.abortTransaction();
-    res.status(500).json({ message: error.message });
-  } finally {
-    // End the session
-    session.endSession();
+    console.error("Error during token verification:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-module.exports = { getAllUsers, updateUser, getUser, deleteUser };
+module.exports = { updateUser, getUser, logoutUser };
