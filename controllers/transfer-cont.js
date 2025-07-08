@@ -3,47 +3,48 @@ const Account = require("../models/Account");
 const { format, parseISO } = require("date-fns");
 
 const transferMoney = async (req, res) => {
-  // const userId = req.userId
-  const { from, to, amount, memo, date } = req.body;
+	const userId = req.userId;
+	const { from, to, amount, memo, date } = req.body;
 
-  if (!from || !to || !amount || !date)
-    return res.status(400).json({ message: "Invalid transfer details" });
+	if (!from || !to || !amount || !date)
+		return res.status(400).json({ message: "Invalid transfer details" });
 
-  try {
-    const amt = parseFloat(amount);
+	try {
+		const amt = parseFloat(amount);
 
-    const currentDate = parseISO(date);
-    const myDate = format(currentDate, "MM/dd/yyyy");
-    const senderAcct = await Account.findOne({ account_num: from });
-    if (!senderAcct)
-      return res.status(404).json({ message: "Invalid sender account!" });
+		const currentDate = parseISO(date);
+		const myDate = format(currentDate, "MM/dd/yyyy");
+		const senderAcct = await Account.findOne({ account_num: from });
+		if (!senderAcct)
+			return res.status(404).json({ message: "Invalid sender account!" });
 
-    let senderBalance = parseFloat(senderAcct.available_bal);
+		let senderBalance = parseFloat(senderAcct.available_bal);
 
-    if (senderBalance < amount)
-      return res.status(400).json({ message: "Insufficient funds!" });
+		if (senderBalance < amount)
+			return res.status(400).json({ message: "Insufficient funds!" });
 
-    senderBalance = senderAcct.available_bal -= amt;
-    // receiverBalance = receiverBalance += amt;
+		senderBalance = senderAcct.available_bal -= amt;
+		// receiverBalance = receiverBalance += amt;
 
-    await senderAcct.save();
+		await senderAcct.save();
 
-    const newTransaction = new Transaction({
-      initiator: req.user,
-      sender: from,
-      receiver: to,
-      amount: amt,
-      desc: memo || "External Transfer",
-      date: myDate,
-    });
+		const newTransaction = new Transaction({
+			owner: userId,
+			sender: from,
+			receiver: to,
+			amount: amt,
+			desc: memo || "External Transfer",
+			date: myDate,
+			trx_type: "debit",
+		});
 
-    await newTransaction.save();
+		await newTransaction.save();
 
-    res.status(200).json({ message: "Transfer Successful" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "An error occured." });
-  }
+		res.status(200).json({ message: "Transfer Successful" });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: "An error occured." });
+	}
 };
 
 module.exports = { transferMoney };

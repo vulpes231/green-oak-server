@@ -13,7 +13,7 @@ const getAllAccounts = async (req, res) => {
 };
 
 const createNewAccount = async (req, res) => {
-  const { username, account_type } = req.body;
+  const { username, account_type, balance } = req.body;
 
   if (!username || !account_type)
     return res.status(400).json({ message: "All fields required" });
@@ -36,7 +36,7 @@ const createNewAccount = async (req, res) => {
       account_owner: user._id,
       account_num: account_num,
       account_type: account_type,
-      available_bal: 0,
+      available_bal: balance || 0,
       current_bal: 0,
     };
 

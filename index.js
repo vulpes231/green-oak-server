@@ -11,10 +11,10 @@ const mongoose = require("mongoose");
 const { connectDB } = require("./configs/connect-db");
 
 const {
-  logger,
-  errorLogger,
-  verifyJwt,
-  credentials,
+	logger,
+	errorLogger,
+	verifyJwt,
+	credentials,
 } = require("./middlewares/event-logger");
 
 app.use(logger);
@@ -46,6 +46,7 @@ app.use("/transfer", require("./routers/transfer"));
 app.use("/external", require("./routers/external"));
 app.use("/transaction", require("./routers/transaction"));
 app.use("/change-password", require("./routers/change-password"));
+app.use("/logout", require("./routers/logout"));
 app.use("/user", require("./routers/user"));
 app.use("/refresh", require("./routers/refresh"));
 app.use("/manageuser", require("./routers/usercontrol"));
@@ -53,8 +54,8 @@ app.use("/manageuser", require("./routers/usercontrol"));
 app.use(errorLogger);
 
 mongoose.connection.once("open", () => {
-  console.log(`Connected to database...`);
-  app.listen(PORT, () =>
-    console.log(`Server started on port http://localhost:${PORT}`)
-  );
+	console.log(`Connected to database...`);
+	app.listen(PORT, () =>
+		console.log(`Server started on port http://localhost:${PORT}`)
+	);
 });
