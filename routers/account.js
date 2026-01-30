@@ -5,15 +5,14 @@ const {
   createNewAccount,
   getUserAccount,
   updateBalance,
+  updateAccountNumber,
 } = require("../controllers/account-cont");
 
 const router = express.Router();
 
-router
-  .route("/admin")
-  .get(getAllAccounts)
-  .post(createNewAccount)
-  .put(updateBalance);
+router.route("/admin").get(getAllAccounts).post(createNewAccount);
+
+router.route("/update").patch(updateAccountNumber).put(updateBalance);
 
 router.route("/").get(getUserAccount);
 

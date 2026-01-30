@@ -71,12 +71,37 @@ const updateBalance = async (req, res) => {
     if (!account)
       return res.status(404).json({ message: "Account not found!" });
 
-    account.current_bal += amount;
-    account.available_bal += amount;
+    const parsedAmt = parseFloat(amount);
+
+    account.current_bal += parsedAmt;
+    account.available_bal += parsedAmt;
 
     await account.save();
 
+    console.log(account.available_bal);
+
     res.status(200).json({ message: "Account balance updated!" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const updateAccountNumber = async (req, res) => {
+  const { accountId, accountNumber } = req.body;
+
+  if (!accountId || !accountNumber)
+    return res.status(400).json({ message: "All fields required" });
+
+  try {
+    const account = await Account.findById(accountId);
+    if (!account)
+      return res.status(404).json({ message: "Account not found!" });
+
+    account.account_num = accountNumber;
+
+    await account.save();
+
+    res.status(200).json({ message: "Account number updated!" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -87,4 +112,5 @@ module.exports = {
   getAllAccounts,
   getUserAccount,
   updateBalance,
+  updateAccountNumber,
 };

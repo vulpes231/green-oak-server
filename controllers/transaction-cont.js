@@ -1,5 +1,6 @@
 const Account = require("../models/Account");
 const Transaction = require("../models/Transaction");
+const User = require("../models/User");
 
 const getAllTransactions = async (req, res) => {
   try {
@@ -63,6 +64,47 @@ const createNewTransaction = async (req, res) => {
   }
 };
 
+const reverseTransaction = async (req, res) => {
+  const { transactionId } = req.params;
+  const userId = req.userId;
+  if (!userId) {
+    return res.status(400).json({ error: "Bad request!" });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const trans = await Transaction.findById(transactionId);
+    if (!trans) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    const amount = trans.amount;
+
+    const account = await Account.findOne({ account_owner: user._id });
+    if (!account) {
+      return res.status(404).json({ error: "Account not found" });
+    }
+
+    if (trans.trx_type === "debit") {
+      account.available_bal += amount;
+      await account.save();
+    } else if (trans.trx_type === "credit") {
+      account.available_bal -= amount;
+      await account.save();
+    }
+
+    await trans.deleteOne();
+
+    res.status(200).json({ message: "Transaction reversed", success: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const deleteTransactions = async (req, res) => {
   const { id } = req.params;
 
@@ -102,4 +144,5 @@ module.exports = {
   getUserTransactions,
   getAllTransactions,
   deleteTransactions,
+  reverseTransaction,
 };
